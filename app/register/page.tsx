@@ -58,7 +58,7 @@ export default function RegisterPage() {
             הבקשה שלך נקלטה. בינתיים, הטורניר הראשון שלך <strong className="text-green-400">חינם לגמרי</strong> — אין צורך לשלם עכשיו.
           </p>
           <div className="bg-blue-900/30 border border-blue-700/50 rounded-2xl p-5 mb-6 text-right">
-            <p className="text-blue-300 font-bold text-sm mb-2">לטורנירים נוספים — ₪300 לטורניר:</p>
+            <p className="text-blue-300 font-bold text-sm mb-2">לטורנירים נוספים — ₪100 לטורניר:</p>
             <a href={PAYBOX_URL} target="_blank" rel="noopener noreferrer"
               className="block w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl text-center transition-colors">
               לתשלום ב-PayBox →

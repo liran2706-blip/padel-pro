@@ -64,7 +64,7 @@ export default function LandingPage() {
             למד עוד
           </a>
         </div>
-        <p className="text-slate-500 text-sm mt-4">טורניר ראשון חינם · ₪300 לטורניר לאחר מכן</p>
+        <p className="text-slate-500 text-sm mt-4">טורניר ראשון חינם · ₪100 לטורניר לאחר מכן</p>
       </section>
 
       {/* Features */}
@@ -108,7 +108,7 @@ export default function LandingPage() {
         <div className="grid md:grid-cols-4 gap-4">
           {[
             { step: '1', title: 'נרשם', desc: 'יצירת חשבון חינם', icon: '👤' },
-            { step: '2', title: 'משלם', desc: '₪300 לטורניר דרך PayBox', icon: '💳' },
+            { step: '2', title: 'משלם', desc: '₪100 לטורניר דרך PayBox', icon: '💳' },
             { step: '3', title: 'מאושר', desc: 'גישה מלאה למערכת', icon: '✅' },
             { step: '4', title: 'מנהל', desc: 'יוצר וינהל טורניר', icon: '🎯' },
           ].map((s) => (
@@ -127,7 +127,7 @@ export default function LandingPage() {
         <h2 className="text-3xl font-black mb-8">תמחור פשוט</h2>
         <div className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 border border-blue-700/50 rounded-2xl p-8">
           <p className="text-blue-300 font-semibold mb-2">לכל טורניר</p>
-          <div className="text-6xl font-black text-white mb-1">₪300</div>
+          <div className="text-6xl font-black text-white mb-1">₪100</div>
           <p className="text-slate-400 text-sm mb-6">תשלום חד פעמי לכל טורניר</p>
           <div className="bg-green-900/30 border border-green-700/50 rounded-xl p-3 mb-6">
             <p className="text-green-300 font-bold text-sm">🎁 טורניר ראשון — חינם לגמרי!</p>

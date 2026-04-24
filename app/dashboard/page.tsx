@@ -100,7 +100,7 @@ export default function DashboardPage() {
               </div>
               <p className="text-white font-bold text-lg mb-2">הטורניר הסתיים</p>
               <p className="text-slate-400 text-sm">
-                כדי להקים טורניר נוסף, יש לשלם ₪300 ולהמתין לאישור.
+                כדי להקים טורניר נוסף, יש לשלם ₪100 ולהמתין לאישור.
               </p>
             </div>
 
@@ -109,7 +109,7 @@ export default function DashboardPage() {
               <p className="text-slate-400 text-sm mb-4">לאחר התשלום נאשר את הגישה שלך בהקדם.</p>
               <a href={PAYBOX_URL} target="_blank" rel="noopener noreferrer"
                 className="block w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3.5 rounded-xl text-center transition-colors">
-                💳 לתשלום ₪300 ב-PayBox ←
+                💳 לתשלום ₪100 ב-PayBox ←
               </a>
             </div>
           </div>
