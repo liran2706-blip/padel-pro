@@ -18,7 +18,10 @@ export default function AdminPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || user.email !== ADMIN_EMAIL) { window.location.href = '/'; return; }
       setIsAdmin(true);
-      const { data } = await supabase.from('pro_users').select('*').order('created_at', { ascending: false });
+      const { data } = await supabase.from('pro_users')
+        .select('*')
+        .neq('email', ADMIN_EMAIL)
+        .order('created_at', { ascending: false });
       setUsers(data ?? []);
       setLoading(false);
     }
