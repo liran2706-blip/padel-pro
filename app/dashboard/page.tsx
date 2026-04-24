@@ -18,7 +18,8 @@ export default function DashboardPage() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { window.location.href = '/login'; return; }
-      const { data } = await supabase.from('pro_users').select('*').eq('user_id', user.id).single();
+      const { data } = await supabase.from('pro_users').select('*').eq('user_id', user.id).maybeSingle();
+      if (!data) { window.location.href = '/register'; return; }
       setProUser(data);
       setLoading(false);
     }
@@ -36,15 +37,12 @@ export default function DashboardPage() {
 
   const isPending = proUser?.status === 'pending';
   const isApproved = proUser?.status === 'approved';
-  const hasFree = !proUser?.free_tournament_used;
-  const credits = proUser?.credits ?? 0;
-  const totalAvailable = (hasFree ? 1 : 0) + credits;
+  const isActive = proUser?.active === true;
 
   return (
     <div className="min-h-screen bg-[#050510]" dir="rtl">
-      {/* Navbar */}
       <nav className="border-b border-white/10 px-6 py-4">
-        <div className="max-w-3xl mx-auto flex items-center justify-between">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
           <Link href="/" className="font-black text-lg">
             <span className="text-white">PADEL</span>
             <span className="text-blue-400"> PRO</span>
@@ -56,75 +54,65 @@ export default function DashboardPage() {
         </div>
       </nav>
 
-      <main className="max-w-3xl mx-auto px-6 py-8">
+      <main className="max-w-2xl mx-auto px-6 py-8">
         <h1 className="text-2xl font-black text-white mb-6">הדשבורד שלי</h1>
 
-        {/* Status card */}
+        {/* Pending */}
         {isPending && (
-          <div className="bg-yellow-900/20 border border-yellow-700/50 rounded-2xl p-5 mb-6">
+          <div className="bg-yellow-900/20 border border-yellow-700/50 rounded-2xl p-6 mb-6">
             <div className="flex items-start gap-3">
-              <span className="text-2xl">⏳</span>
+              <span className="text-3xl">⏳</span>
               <div>
-                <p className="font-bold text-yellow-300">הבקשה שלך בבדיקה</p>
-                <p className="text-yellow-500 text-sm mt-1">
-                  נאשר את חשבונך בהקדם. הטורניר הראשון שלך חינם — אין צורך לשלם עכשיו.
+                <p className="font-bold text-yellow-300 text-lg">הבקשה שלך בבדיקה</p>
+                <p className="text-yellow-600 text-sm mt-1">
+                  נאשר את חשבונך בהקדם ותקבל גישה למערכת. הטורניר הראשון שלך חינם לגמרי.
                 </p>
               </div>
             </div>
           </div>
         )}
 
-        {isApproved && (
-          <>
-            {/* Credits */}
-            <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-                <p className="text-3xl font-black text-white">{totalAvailable}</p>
-                <p className="text-slate-400 text-xs mt-1">טורנירים זמינים</p>
-              </div>
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-                <p className="text-3xl font-black text-green-400">{hasFree ? '1' : '0'}</p>
-                <p className="text-slate-400 text-xs mt-1">חינם</p>
-              </div>
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-                <p className="text-3xl font-black text-blue-400">{credits}</p>
-                <p className="text-slate-400 text-xs mt-1">קרדיטים</p>
-              </div>
+        {/* Approved + Active */}
+        {isApproved && isActive && (
+          <div className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 border border-blue-700/50 rounded-2xl p-6 mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></span>
+              <p className="text-green-300 font-semibold text-sm">גישה פעילה</p>
             </div>
+            <h2 className="font-black text-white text-xl mb-2">מוכן לנהל טורניר?</h2>
+            <p className="text-slate-400 text-sm mb-5">
+              יש לך גישה מלאה למערכת הניהול — צור טורניר מיקסינג או בתים.
+            </p>
+            <a href={APP_URL} target="_blank" rel="noopener noreferrer"
+              className="block w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl text-center text-lg transition-colors">
+              🎾 כנס למערכת הניהול ←
+            </a>
+          </div>
+        )}
 
-            {/* Go to app */}
-            <div className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 border border-blue-700/50 rounded-2xl p-6 mb-6">
-              <h2 className="font-black text-white text-lg mb-2">מוכן לנהל טורניר?</h2>
-              <p className="text-slate-400 text-sm mb-4">
-                {totalAvailable > 0
-                  ? `יש לך ${totalAvailable} טורניר${totalAvailable > 1 ? 'ים' : ''} זמין${totalAvailable > 1 ? 'ים' : ''}`
-                  : 'אין לך טורנירים זמינים — רכוש קרדיט כדי להמשיך'}
+        {/* Approved + Blocked */}
+        {isApproved && !isActive && (
+          <div className="space-y-4 mb-6">
+            <div className="bg-slate-900/50 border border-slate-700/50 rounded-2xl p-6">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="w-3 h-3 bg-red-400 rounded-full"></span>
+                <p className="text-red-300 font-semibold text-sm">גישה חסומה</p>
+              </div>
+              <p className="text-white font-bold text-lg mb-2">הטורניר הסתיים</p>
+              <p className="text-slate-400 text-sm">
+                כדי להקים טורניר נוסף, יש לשלם ₪300 ולהמתין לאישור.
               </p>
-              {totalAvailable > 0 ? (
-                <a href={APP_URL} target="_blank" rel="noopener noreferrer"
-                  className="block w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl text-center transition-colors">
-                  🎾 כנס למערכת הניהול ←
-                </a>
-              ) : (
-                <a href={PAYBOX_URL} target="_blank" rel="noopener noreferrer"
-                  className="block w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3.5 rounded-xl text-center transition-colors">
-                  💳 רכוש טורניר — ₪300
-                </a>
-              )}
             </div>
 
-            {/* Buy more */}
-            {totalAvailable > 0 && (
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-                <p className="text-slate-400 text-sm mb-3">רוצה לרכוש טורנירים נוספים?</p>
-                <a href={PAYBOX_URL} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center justify-between bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl px-4 py-3 transition-colors">
-                  <span className="text-sm font-semibold text-white">רכישת טורניר נוסף</span>
-                  <span className="text-blue-400 font-bold">₪300 →</span>
-                </a>
-              </div>
-            )}
-          </>
+            <div className="bg-green-900/20 border border-green-700/50 rounded-2xl p-5">
+              <p className="text-green-300 font-bold mb-1">רוצה טורניר נוסף?</p>
+              <p className="text-slate-400 text-sm mb-4">לאחר התשלום נאשר את הגישה שלך בהקדם.</p>
+              <a href={PAYBOX_URL} target="_blank" rel="noopener noreferrer"
+                className="block w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3.5 rounded-xl text-center transition-colors">
+                💳 לתשלום ₪300 ב-PayBox ←
+              </a>
+            </div>
+          </div>
         )}
       </main>
     </div>
